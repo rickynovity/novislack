@@ -1,9 +1,18 @@
+import LoginForm from "./components/pages/LoginForm";
+import NoviSlackChat from "./components/pages/NoviSlackChat";
+import { Toaster, toast } from "sonner";
+
 function App() {
+  const user = "Rhix";
+  const handleLogout = () => toast.info("coming soon ..");
   return (
     <>
-      <h1 className="text-3xl font-bold underline text-red-500">
-        NoviSlack front OK
-      </h1>
+      {Boolean(user) ? (
+        <NoviSlackChat user={user} onLogout={handleLogout} />
+      ) : (
+        <LoginForm />
+      )}
+      <Toaster richColors position="top-center" closeButton />
     </>
   );
 }
