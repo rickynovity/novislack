@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import NovislackImg from "/novislack.svg";
 import MeImg from "/me.png";
 import { MessageInput, MessageList } from "../ui/chat";
+import { useAddMessage, useMessages } from "../../lib/graphql/hooks";
 
 const NoviSlackChat = ({ user, onLogout }) => {
   const [selectedChannel, setSelectedChannel] = useState("formation");
@@ -10,7 +11,13 @@ const NoviSlackChat = ({ user, onLogout }) => {
     setSelectedChannel(channel);
   };
 
-  const message = "Hello la team ...";
+  const { messages } = useMessages();
+  const { addMessage } = useAddMessage();
+
+  const handleSend = async (text) => {
+    const message = await addMessage(text);
+    console.log("Message added:", message);
+  };
 
   return (
     <div className="flex-col bg-gradient-to-tl from-yellow-200 via-emerald-200 to-yellow-200">
@@ -176,10 +183,10 @@ const NoviSlackChat = ({ user, onLogout }) => {
           </div>
 
           {/* Messages */}
-          <MessageList user={user} message={message} />
+          <MessageList user={user} messages={messages} />
 
           {/* Message input */}
-          <MessageInput selectedChannel={selectedChannel} />
+          <MessageInput selectedChannel={selectedChannel} onSend={handleSend} />
         </div>
       </div>
     </div>
