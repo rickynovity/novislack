@@ -10,8 +10,10 @@ import {
   NoviSlackLayout,
   SigninLayout,
 } from "../ui";
+import { login } from "../../lib/auth";
+import { toast } from "sonner";
 
-const LoginForm = () => {
+const LoginForm = ({ onLogin }) => {
   const [loginData, setLoginData] = useState({
     username: "",
     password: "",
@@ -29,7 +31,16 @@ const LoginForm = () => {
     event.preventDefault();
     setError(false);
     console.log("USER_INFO : ", loginData);
+    const { username, password } = loginData;
+    const user = await login(username, password);
+    if (user) {
+      onLogin(user);
+    } else {
+      setError(true);
+    }
   };
+
+  const handleClick = () => toast.info("Coming soon ...");
 
   return (
     <NoviSlackLayout>
@@ -37,8 +48,16 @@ const LoginForm = () => {
       <LoginTitle />
       <SigninLayout>
         <ButtonGroup>
-          <Button iconName="google" text="Se connecter avec Google" />
-          <Button iconName="github" text="Se connecter avec Github" />
+          <Button
+            iconName="google"
+            text="Se connecter avec Google"
+            onClick={handleClick}
+          />
+          <Button
+            iconName="github"
+            text="Se connecter avec Github"
+            onClick={handleClick}
+          />
         </ButtonGroup>
         <Divider text="OU" />
         <form onSubmit={handleSubmit} className="space-y-5">
