@@ -8,17 +8,21 @@ const MessageInput = ({ selectedChannel, onSend }) => {
   };
   const handleKeyDown = (event) => {
     if (event.key === "Enter") {
+      event.preventDefault();
       console.log("ON_SEND");
       onSend(event.target.value);
       console.log("TEXT : ", event.target.value);
-      event.target.value = "";
+      // event.target.value = "";
+      setInputValue("");
     }
   };
   const handleSubmit = (event) => {
+    event.preventDefault();
     console.log("ON_SEND");
-    onSend(event.target.value);
-    console.log("TEXT : ", event.target.value);
-    event.target.value = "";
+    onSend(inputValue);
+    console.log("TEXT : ", inputValue);
+    // event.target.value = "";
+    setInputValue("");
   };
 
   return (
