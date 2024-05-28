@@ -1,17 +1,28 @@
 type Query {
   messages: [Message!]
+  channels: [Channel!]
 }
 
 type Mutation {
   addMessage(text: String!): Message
+  addChannel(name: String!): Channel
+  setActiveChannel(channelId: ID!): Channel
 }
 
 type Subscription {
   messageAdded: Message
+  channelAdded: Channel
+  channelActivated: Channel
 }
 
 type Message {
   id: ID!
   user: String!
   text: String!
+}
+
+type Channel {
+  id: ID!
+  user: String!
+  name: String!
 }

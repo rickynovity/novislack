@@ -1,6 +1,7 @@
 import { GraphQLError } from "graphql";
 import { PubSub } from "graphql-subscriptions";
 import { createMessage, getMessages } from "./db/messages.js";
+import { createChannel, getChannels, setActiveChannel } from "./db/channels.js";
 
 const pubSub = new PubSub();
 
@@ -9,6 +10,10 @@ export const resolvers = {
     messages: (_root, _args, { user }) => {
       if (!user) throw unauthorizedError();
       return getMessages();
+    },
+    channels: (_root, _args, { user }) => {
+      if (!user) throw unauthorizedError();
+      return getChannels();
     },
   },
 
@@ -19,6 +24,18 @@ export const resolvers = {
       pubSub.publish("MESSAGE_ADDED", { messageAdded: message });
       return message;
     },
+    addChannel: async (_root, { name }, { user }) => {
+      if (!user) throw unauthorizedError();
+      const channel = await createChannel(user, name);
+      pubSub.publish("CHANNEL_ADDED", { channelAdded: channel });
+      return channel;
+    },
+    setActiveChannel: async (_root, { channelId }, { user }) => {
+      if (!user) throw unauthorizedError();
+      const channel = await setActiveChannel(user, channelId);
+      pubSub.publish("CHANNEL_ACTIVATED", { channelActivated: channel });
+      return channel;
+    },
   },
 
   Subscription: {
@@ -26,6 +43,18 @@ export const resolvers = {
       subscribe: (_root, _args, { user }) => {
         if (!user) throw unauthorizedError();
         return pubSub.asyncIterator("MESSAGE_ADDED");
+      },
+    },
+    channelAdded: {
+      subscribe: (_root, _args, { user }) => {
+        if (!user) throw unauthorizedError();
+        return pubSub.asyncIterator("CHANNEL_ADDED");
+      },
+    },
+    channelActivated: {
+      subscribe: (_root, _args, { user }) => {
+        if (!user) throw unauthorizedError();
+        return pubSub.asyncIterator("CHANNEL_ACTIVATED");
       },
     },
   },

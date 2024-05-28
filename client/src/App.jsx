@@ -5,6 +5,7 @@ import { Toaster } from "sonner";
 import { getUser, logout } from "./lib/auth";
 import { apolloClient } from "./lib/graphql/client";
 import { ApolloProvider } from "@apollo/client";
+import Modal from "react-modal";
 
 function App() {
   const [user, setUser] = useState(getUser);
@@ -12,6 +13,8 @@ function App() {
     logout();
     setUser(null);
   };
+
+  Modal.setAppElement("#root");
 
   return (
     <ApolloProvider client={apolloClient}>
