@@ -24,3 +24,14 @@ export async function setActiveChannel(user, channelId) {
   await getChannelTable().where({ id: channelId }).update({ active: true });
   return channel;
 }
+
+export async function deleteChannel(user, channelId) {
+  const channel = await getChannelTable().where({ id: channelId }).first();
+  if (!channel) throw new Error("Channel not found");
+  if (channel.user !== user)
+    throw new Error(
+      "Unauthorized: You do not have permission to delete this channel"
+    );
+  await getChannelTable().where({ id: channelId }).delete();
+  return channel;
+}

@@ -79,3 +79,9 @@ export const channelActivatedSubscription = gql`
     }
   }
 `;
+
+export const deleteChannelMutation = gql`
+  mutation DeleteChannelMutation($id: ID!) {
+    deleteChannel(id: $id)
+  }
+`;

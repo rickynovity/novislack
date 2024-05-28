@@ -4,6 +4,7 @@ import {
   addMessageMutation,
   channelAddedSubscription,
   channelsQuery,
+  deleteChannelMutation,
   messageAddedSubscription,
   messagesQuery,
   setActiveChannelMutation,
@@ -69,4 +70,15 @@ export function useSetActiveChannel() {
     await mutate({ variables: { channelId } });
   };
   return { setActiveChannel };
+}
+
+export function useDeleteChannel() {
+  const [mutate, { error }] = useMutation(deleteChannelMutation);
+  if (error) {
+    console.error("GraphQL error:", error);
+  }
+  const deleteChannel = async (channelId) => {
+    await mutate({ variables: { id: channelId } });
+  };
+  return { deleteChannel };
 }

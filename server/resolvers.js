@@ -36,6 +36,13 @@ export const resolvers = {
       pubSub.publish("CHANNEL_ACTIVATED", { channelActivated: channel });
       return channel;
     },
+    deleteChannel: async (_root, { id }, { user }) => {
+      if (!user) throw unauthorizedError();
+      console.log("IDDDDDDDDDDD : ", id);
+      const channel = await deleteChannel(user, id);
+      pubSub.publish("CHANNEL_DELETED", { channelDeleted: channel });
+      return channel;
+    },
   },
 
   Subscription: {

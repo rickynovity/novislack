@@ -7,6 +7,7 @@ import {
   useAddMessage,
   useChannels,
   useMessages,
+  useDeleteChannel,
 } from "../../lib/graphql/hooks";
 import Modal from "react-modal";
 
@@ -14,6 +15,7 @@ const NoviSlackChat = ({ user, onLogout }) => {
   const [selectedChannel, setSelectedChannel] = useState("formation");
   const { channels, loading, error } = useChannels();
   const { addChannel } = useAddChannel();
+  const { deleteChannel } = useDeleteChannel();
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [newChannelName, setNewChannelName] = useState("");
 
@@ -46,6 +48,14 @@ const NoviSlackChat = ({ user, onLogout }) => {
   const handleSend = async (text) => {
     const message = await addMessage(text);
     console.log("Message added:", message);
+  };
+
+  const handleDeleteChannel = async (channelId) => {
+    console.log("CCHHCHCH : ", channelId);
+    await deleteChannel(channelId);
+    if (selectedChannel === channelId) {
+      setSelectedChannel("general");
+    }
   };
 
   if (loading) return <p>Chargement...</p>;
@@ -252,6 +262,10 @@ const NoviSlackChat = ({ user, onLogout }) => {
                   >
                     <i className="ri-hashtag mr-2"></i>
                     {channel.name}
+                    <i
+                      className="ri-close-fill float-right cursor-pointer"
+                      onClick={() => handleDeleteChannel(channel.id)}
+                    ></i>
                   </li>
                 ))}
                 <li
